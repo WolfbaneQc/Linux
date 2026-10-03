@@ -12,6 +12,7 @@
 #     - Adds the current user to the libvirt and kvm groups.
 #     - Enables and starts the libvirtd service.
 #     - Configures the libvirt default network.
+#     - Displays the resulting libvirt network configuration.
 #
 #   Package installation is handled by apt.sh.
 #
@@ -19,7 +20,9 @@
 #
 # =============================================================================
 
+
 set -Eeuo pipefail
+
 
 # -----------------------------------------------------------------------------
 # User Groups
@@ -32,6 +35,7 @@ sudo usermod -aG libvirt,kvm "$USER"
 
 printf '%s\n' "[OK] $USER added to libvirt and kvm groups."
 
+
 # -----------------------------------------------------------------------------
 # libvirt Service
 # -----------------------------------------------------------------------------
@@ -42,6 +46,7 @@ printf '%s\n' "Enabling and starting libvirtd..."
 sudo systemctl enable --now libvirtd.service
 
 printf '%s\n' "[OK] libvirtd service is enabled and running."
+
 
 # -----------------------------------------------------------------------------
 # Default libvirt Network
@@ -68,13 +73,16 @@ else
     printf '%s\n' "       Check the libvirt network configuration."
 fi
 
+
 # -----------------------------------------------------------------------------
 # Verification
 # -----------------------------------------------------------------------------
 
 printf '\n'
 printf '%s\n' "Current libvirt networks:"
+
 sudo virsh net-list --all
+
 
 # -----------------------------------------------------------------------------
 # Completion
