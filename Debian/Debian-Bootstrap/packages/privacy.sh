@@ -65,36 +65,6 @@ printf '%s\n' '[OK] Privacy tool prerequisites confirmed.'
 
 
 # -----------------------------------------------------------------------------
-# Privacy Applications
-# -----------------------------------------------------------------------------
-#
-# These applications are installed from Flathub.
-#
-# -----------------------------------------------------------------------------
-
-
-PRIVACY_FLATPAKS=(
-    # Proton VPN
-    "com.protonvpn.www"
-
-    # Tor Browser Launcher
-    "org.torproject.torbrowser-launcher"
-)
-
-
-# -----------------------------------------------------------------------------
-# Privacy Tools
-# -----------------------------------------------------------------------------
-#
-# These tools are installed using Cargo.
-#
-# -----------------------------------------------------------------------------
-
-
-ONIUX_VERSION="v0.10.0"
-
-
-# -----------------------------------------------------------------------------
 # Functions
 # -----------------------------------------------------------------------------
 
@@ -106,8 +76,11 @@ install_flatpak_application() {
     printf '%s\n' "Checking $application_name..."
 
     if sudo flatpak info "$application_id" >/dev/null 2>&1; then
+
         printf '%s\n' "[OK] $application_name is already installed."
+
     else
+
         printf '%s\n' "Installing $application_name..."
 
         sudo flatpak install \
@@ -116,34 +89,54 @@ install_flatpak_application() {
             "$application_id"
 
         printf '%s\n' "[OK] $application_name installed."
+
     fi
 }
 
 
 # -----------------------------------------------------------------------------
-# Flatpak Privacy Applications
+# Privacy Applications
 # -----------------------------------------------------------------------------
+#
+# These applications are installed system-wide from Flathub.
+#
+# -----------------------------------------------------------------------------
+
 
 printf '\n'
 printf '%s\n' "Installing privacy applications..."
 
 
+# Proton VPN
 install_flatpak_application \
-    "${PRIVACY_FLATPAKS[0]}" \
+    "com.protonvpn.www" \
     "Proton VPN"
 
 
+# Tor Browser Launcher
 install_flatpak_application \
-    "${PRIVACY_FLATPAKS[1]}" \
+    "org.torproject.torbrowser-launcher" \
     "Tor Browser Launcher"
 
 
 # -----------------------------------------------------------------------------
 # oniux
 # -----------------------------------------------------------------------------
+#
+# oniux is installed from the official Tor Project Git repository using Cargo.
+#
+# The version is intentionally pinned so that the bootstrap remains
+# reproducible.
+#
+# -----------------------------------------------------------------------------
+
+
+ONIUX_VERSION="v0.10.0"
+
 
 printf '\n'
 printf '%s\n' "Installing oniux..."
+
 
 if command -v oniux >/dev/null 2>&1; then
 
@@ -170,6 +163,7 @@ printf '\n'
 printf '%s\n' "Verifying privacy tools..."
 
 
+# Proton VPN
 if sudo flatpak info "com.protonvpn.www" >/dev/null 2>&1; then
     printf '%s\n' '[OK] Proton VPN verified.'
 else
@@ -178,6 +172,7 @@ else
 fi
 
 
+# Tor Browser Launcher
 if sudo flatpak info "org.torproject.torbrowser-launcher" >/dev/null 2>&1; then
     printf '%s\n' '[OK] Tor Browser Launcher verified.'
 else
@@ -186,6 +181,7 @@ else
 fi
 
 
+# oniux
 if command -v oniux >/dev/null 2>&1; then
     printf '%s\n' '[OK] oniux verified.'
     oniux --version
