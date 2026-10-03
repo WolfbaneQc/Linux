@@ -7,8 +7,8 @@
 # Purpose:
 #   A personal Debian 13 bootstrap script for preparing a fresh Debian
 #   installation with the software, development tools, virtualization
-#   environment, Flatpak applications, and other components used in
-#   WolfbaneQc's preferred Debian workstation setup.
+#   environment, Flatpak applications, Rust toolchain, and privacy tools used
+#   in WolfbaneQc's preferred Debian workstation setup.
 #
 #   The script acts as the main entry point for the bootstrap process and
 #   executes the individual installation/configuration modules in the proper
@@ -34,8 +34,8 @@
 #   1. System and APT packages
 #   2. QEMU / KVM / libvirt virtualization
 #   3. Flatpak and Flathub applications
-#   4. Rust toolchain and oniux
-#   5. Final verification
+#   4. Rust toolchain
+#   5. Privacy tools and applications
 #
 # Usage:
 #   ./setup.sh
@@ -45,6 +45,7 @@ set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 MODULE_DIR="$SCRIPT_DIR/packages"
+
 
 # -----------------------------------------------------------------------------
 # Colors
@@ -61,6 +62,7 @@ else
     RED=''
     RESET=''
 fi
+
 
 # -----------------------------------------------------------------------------
 # Functions
@@ -98,6 +100,7 @@ run_module() {
     success "$module completed successfully."
 }
 
+
 # -----------------------------------------------------------------------------
 # Prerequisites
 # -----------------------------------------------------------------------------
@@ -132,6 +135,7 @@ sudo -v
 success "Debian 13 (Trixie) detected."
 success "sudo access confirmed."
 
+
 # -----------------------------------------------------------------------------
 # Installation
 # -----------------------------------------------------------------------------
@@ -142,6 +146,8 @@ run_module "apt.sh"
 run_module "virtualization.sh"
 run_module "flatpak.sh"
 run_module "rust.sh"
+run_module "privacy.sh"
+
 
 # -----------------------------------------------------------------------------
 # Completion
@@ -154,4 +160,9 @@ printf '%bAll installation modules completed successfully.%b\n' \
     "$GREEN" "$RESET"
 
 printf '\n'
-printf 'A logout/login or reboot may be required for group membership changes.\n'
+printf '%s\n' \
+    'A logout/login or reboot is required for libvirt and KVM group membership changes to take effect.'
+
+printf '\n'
+printf '%s\n' \
+    'After logging in again or rebooting, the Debian workstation bootstrap is ready.'
