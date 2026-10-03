@@ -7,8 +7,9 @@
 # Purpose:
 #   A personal Debian 13 bootstrap script for preparing a fresh Debian
 #   installation with the software, development tools, virtualization
-#   environment, Flatpak applications, Rust toolchain, and privacy tools used
-#   in WolfbaneQc's preferred Debian workstation setup.
+#   environment, Flatpak applications, Rust toolchain, privacy tools, and
+#   basic firewall configuration used in WolfbaneQc's preferred Debian
+#   workstation setup.
 #
 #   The script acts as the main entry point for the bootstrap process and
 #   executes the individual installation/configuration modules in the proper
@@ -33,9 +34,10 @@
 # Execution order:
 #   1. System and APT packages
 #   2. QEMU / KVM / libvirt virtualization
-#   3. Flatpak and Flathub applications
-#   4. Rust toolchain
-#   5. Privacy tools and applications
+#   3. Basic firewall configuration
+#   4. Flatpak and Flathub applications
+#   5. Rust toolchain
+#   6. Privacy tools and applications
 #
 # Usage:
 #   ./setup.sh
@@ -137,13 +139,14 @@ success "sudo access confirmed."
 
 
 # -----------------------------------------------------------------------------
-# Installation
+# Bootstrap
 # -----------------------------------------------------------------------------
 
 log "Starting Debian bootstrap"
 
 run_module "apt.sh"
 run_module "virtualization.sh"
+run_module "security.sh"
 run_module "flatpak.sh"
 run_module "rust.sh"
 run_module "privacy.sh"
@@ -156,7 +159,7 @@ run_module "privacy.sh"
 log "Bootstrap completed"
 
 printf '\n'
-printf '%bAll installation modules completed successfully.%b\n' \
+printf '%bAll installation and configuration modules completed successfully.%b\n' \
     "$GREEN" "$RESET"
 
 printf '\n'
