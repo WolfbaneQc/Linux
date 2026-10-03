@@ -12,17 +12,19 @@
 #     - Denies incoming connections by default.
 #     - Allows outgoing connections by default.
 #     - Enables UFW.
-#     - Verifies the resulting firewall status.
+#     - Verifies that UFW is active.
+#     - Displays the resulting firewall configuration.
 #
-#   GUFW is the graphical frontend. UFW is the firewall being configured.
+#   GUFW is the graphical frontend.
+#   UFW is the firewall being configured.
 #
 #   This script is intended to be called by setup.sh after the required
-#   packages have been installed.
+#   packages have been installed and virtualization has been configured.
 #
 #   Note:
 #     Virtual machine networking may require additional UFW/libvirt rules.
-#     Those rules are intentionally NOT added here until virtualization.sh
-#     has been reviewed.
+#     No additional firewall rules are added here unless they are explicitly
+#     required by the virtualization configuration.
 #
 # =============================================================================
 
@@ -55,10 +57,14 @@ printf '%s\n' '[OK] UFW is installed.'
 printf '\n'
 printf '%s\n' "Configuring firewall policy..."
 
+
 printf '%s\n' "Default incoming policy: DENY"
+
 sudo ufw default deny incoming
 
+
 printf '%s\n' "Default outgoing policy: ALLOW"
+
 sudo ufw default allow outgoing
 
 
@@ -78,6 +84,7 @@ sudo ufw --force enable
 
 printf '\n'
 printf '%s\n' "Verifying firewall configuration..."
+
 
 if ! sudo ufw status | grep -q '^Status: active'; then
     printf '%s\n' '[ERROR] UFW is not active.'
