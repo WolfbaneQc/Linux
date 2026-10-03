@@ -5,10 +5,12 @@
 # =============================================================================
 #
 # Purpose:
-#   Configures Flathub and installs the Flatpak applications used in
-#   WolfbaneQc's preferred Debian workstation setup.
+#   Configures Flathub and installs the general-purpose Flatpak applications
+#   used in WolfbaneQc's preferred Debian workstation setup.
 #
 #   Flatpak itself and GNOME Software integration are installed by apt.sh.
+#
+#   Privacy-related applications are handled separately by privacy.sh.
 #
 #   Application versions are intentionally not specified. The current version
 #   available from Flathub will be installed.
@@ -44,6 +46,8 @@ fi
 # Flatpak runtimes and dependencies are NOT listed here. They are installed
 # automatically by Flatpak when required by an application.
 #
+# Privacy-related applications are installed by privacy.sh.
+#
 # -----------------------------------------------------------------------------
 
 
@@ -63,19 +67,6 @@ BROWSER_APPS=(
 
     # Mullvad Browser
     "net.mullvad.MullvadBrowser"
-)
-
-
-# -----------------------------------------------------------------------------
-# Privacy and Networking
-# -----------------------------------------------------------------------------
-
-PRIVACY_APPS=(
-    # Proton VPN
-    "com.protonvpn.www"
-
-    # Tor Browser Launcher
-    "org.torproject.torbrowser-launcher"
 )
 
 
@@ -200,10 +191,6 @@ fi
 install_flatpak_group \
     "Web Browser" \
     "${BROWSER_APPS[@]}"
-
-install_flatpak_group \
-    "Privacy and Networking" \
-    "${PRIVACY_APPS[@]}"
 
 install_flatpak_group \
     "Development" \
