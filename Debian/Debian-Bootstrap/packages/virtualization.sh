@@ -1,24 +1,26 @@
 #!/usr/bin/env bash
 
 # =============================================================================
-# Debian 13 Virtualization Configuration Module
+# Debian 13 Flatpak Installation Module
 # =============================================================================
 #
 # Purpose:
-#   Configures the QEMU/KVM/libvirt virtualization environment installed by
-#   the APT package module.
+#   Configures Flathub and installs the general-purpose Flatpak applications
+#   used in WolfbaneQc's preferred Debian workstation setup.
 #
-#   This module:
-#     - Adds the current user to the libvirt and kvm groups.
-#     - Enables and starts the libvirtd service.
-#     - Configures the libvirt default network.
-#     - Displays the resulting libvirt network configuration.
+#   Flatpak itself and GNOME Software integration are installed by apt.sh.
 #
-#   Package installation is handled by apt.sh.
+#   Applications are installed system-wide from the Flathub repository.
+#
+#   Privacy-related applications are handled separately by privacy.sh.
+#
+#   Application versions are intentionally not specified. The current version
+#   available from Flathub will be installed.
 #
 #   This script is intended to be called by setup.sh.
 #
 # =============================================================================
+
 
 
 set -Eeuo pipefail
