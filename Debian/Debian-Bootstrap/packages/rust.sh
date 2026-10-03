@@ -10,8 +10,8 @@
 #
 #   This module:
 #     - Verifies that rustup is installed.
-#     - Initializes rustup for the current user.
 #     - Configures the stable Rust toolchain.
+#     - Loads the Cargo environment for the current user.
 #     - Verifies rustc and cargo.
 #
 #   Rust-based applications and tools are installed by their respective
@@ -37,38 +37,7 @@ fi
 
 
 # -----------------------------------------------------------------------------
-# Rustup Initialization
-# -----------------------------------------------------------------------------
-
-printf '\n'
-printf '%s\n' "Configuring rustup..."
-
-if [[ ! -f "$HOME/.cargo/env" ]]; then
-
-    rustup default stable
-
-else
-
-    printf '%s\n' '[OK] rustup is already initialized.'
-
-fi
-
-
-# -----------------------------------------------------------------------------
-# Load Cargo Environment
-# -----------------------------------------------------------------------------
-
-if [[ -f "$HOME/.cargo/env" ]]; then
-    # shellcheck disable=SC1091
-    source "$HOME/.cargo/env"
-else
-    printf '%s\n' '[ERROR] Rust environment file was not created.'
-    exit 1
-fi
-
-
-# -----------------------------------------------------------------------------
-# Stable Toolchain
+# Rust Toolchain
 # -----------------------------------------------------------------------------
 
 printf '\n'
@@ -77,6 +46,23 @@ printf '%s\n' "Configuring stable Rust toolchain..."
 rustup default stable
 
 printf '%s\n' '[OK] Stable Rust toolchain configured.'
+
+
+# -----------------------------------------------------------------------------
+# Load Cargo Environment
+# -----------------------------------------------------------------------------
+
+if [[ -f "$HOME/.cargo/env" ]]; then
+
+    # shellcheck disable=SC1091
+    source "$HOME/.cargo/env"
+
+else
+
+    printf '%s\n' '[ERROR] Rust environment file was not found.'
+    exit 1
+
+fi
 
 
 # -----------------------------------------------------------------------------
@@ -108,4 +94,4 @@ cargo --version
 # -----------------------------------------------------------------------------
 
 printf '\n'
-printf '%s\n' '[OK] Rust toolchain installation completed successfully.'
+printf '%s\n' '[OK] Rust toolchain configuration completed successfully.'
