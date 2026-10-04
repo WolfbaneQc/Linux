@@ -12,12 +12,13 @@
 #     - Verifies that rustup is installed.
 #     - Configures the stable Rust toolchain.
 #     - Loads the Cargo environment for the current user.
+#     - Verifies the active Rust toolchain.
 #     - Verifies rustc and cargo.
 #
 #   Rust-based applications and tools are installed by their respective
 #   modules. For example, oniux is handled by privacy.sh.
 #
-#   This script is intended to be called by setup.sh.
+#   This script is intended to be called by setup.sh after apt.sh.
 #
 # =============================================================================
 
@@ -29,11 +30,18 @@ set -Eeuo pipefail
 # Prerequisites
 # -----------------------------------------------------------------------------
 
+printf '\n'
+printf '%s\n' "Checking Rust prerequisites..."
+
+
 if ! command -v rustup >/dev/null 2>&1; then
     printf '%s\n' '[ERROR] rustup is not installed.'
     printf '%s\n' '        Run apt.sh before running rust.sh.'
     exit 1
 fi
+
+
+printf '%s\n' '[OK] rustup is installed.'
 
 
 # -----------------------------------------------------------------------------
@@ -43,7 +51,9 @@ fi
 printf '\n'
 printf '%s\n' "Configuring stable Rust toolchain..."
 
+
 rustup default stable
+
 
 printf '%s\n' '[OK] Stable Rust toolchain configured.'
 
@@ -51,6 +61,10 @@ printf '%s\n' '[OK] Stable Rust toolchain configured.'
 # -----------------------------------------------------------------------------
 # Load Cargo Environment
 # -----------------------------------------------------------------------------
+
+printf '\n'
+printf '%s\n' "Loading Cargo environment..."
+
 
 if [[ -f "$HOME/.cargo/env" ]]; then
 
@@ -60,9 +74,13 @@ if [[ -f "$HOME/.cargo/env" ]]; then
 else
 
     printf '%s\n' '[ERROR] Rust environment file was not found.'
+    printf '%s\n' '        Expected: ~/.cargo/env'
     exit 1
 
 fi
+
+
+printf '%s\n' '[OK] Cargo environment loaded.'
 
 
 # -----------------------------------------------------------------------------
@@ -72,18 +90,32 @@ fi
 printf '\n'
 printf '%s\n' "Verifying Rust installation..."
 
+
+if ! command -v rustup >/dev/null 2>&1; then
+    printf '%s\n' '[ERROR] rustup was not found after configuration.'
+    exit 1
+fi
+
+
 if ! command -v rustc >/dev/null 2>&1; then
     printf '%s\n' '[ERROR] rustc was not found.'
     exit 1
 fi
+
 
 if ! command -v cargo >/dev/null 2>&1; then
     printf '%s\n' '[ERROR] cargo was not found.'
     exit 1
 fi
 
+
+printf '%s\n' 'Active Rust toolchain:'
+rustup show active-toolchain
+
+
 printf '%s\n' 'Rust version:'
 rustc --version
+
 
 printf '%s\n' 'Cargo version:'
 cargo --version

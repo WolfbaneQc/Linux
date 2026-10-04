@@ -37,30 +37,70 @@ printf '\n'
 printf '%s\n' "Checking privacy tool prerequisites..."
 
 
+# -----------------------------------------------------------------------------
 # Flatpak
+# -----------------------------------------------------------------------------
+
 if ! command -v flatpak >/dev/null 2>&1; then
+
     printf '%s\n' '[ERROR] Flatpak is not installed.'
-    printf '%s\n' '        Run apt.sh and flatpak.sh first.'
+    printf '%s\n' '        Run apt.sh before running privacy.sh.'
     exit 1
+
 fi
 
 
+printf '%s\n' '[OK] Flatpak is installed.'
+
+
+# -----------------------------------------------------------------------------
 # Flathub
+# -----------------------------------------------------------------------------
+
 if ! sudo flatpak remote-list | awk '{print $1}' | grep -qx 'flathub'; then
+
     printf '%s\n' '[ERROR] Flathub is not configured.'
     printf '%s\n' '        Run flatpak.sh before privacy.sh.'
     exit 1
+
 fi
 
 
+printf '%s\n' '[OK] Flathub is configured.'
+
+
+# -----------------------------------------------------------------------------
+# Cargo Environment
+# -----------------------------------------------------------------------------
+
+if [[ -f "$HOME/.cargo/env" ]]; then
+
+    # shellcheck disable=SC1091
+    source "$HOME/.cargo/env"
+
+else
+
+    printf '%s\n' '[ERROR] Cargo environment file was not found.'
+    printf '%s\n' '        Run rust.sh before privacy.sh.'
+    exit 1
+
+fi
+
+
+# -----------------------------------------------------------------------------
 # Cargo
+# -----------------------------------------------------------------------------
+
 if ! command -v cargo >/dev/null 2>&1; then
+
     printf '%s\n' '[ERROR] Cargo is not available.'
     printf '%s\n' '        Run rust.sh before privacy.sh.'
     exit 1
+
 fi
 
 
+printf '%s\n' '[OK] Cargo is available.'
 printf '%s\n' '[OK] Privacy tool prerequisites confirmed.'
 
 
@@ -125,8 +165,8 @@ install_flatpak_application \
 #
 # oniux is installed from the official Tor Project Git repository using Cargo.
 #
-# The version is intentionally pinned so that the bootstrap remains
-# reproducible.
+# The version is pinned so that the bootstrap uses a known release rather
+# than whatever happens to be at the repository's current default branch.
 #
 # -----------------------------------------------------------------------------
 
@@ -135,7 +175,7 @@ ONIUX_VERSION="v0.10.0"
 
 
 printf '\n'
-printf '%s\n' "Installing oniux..."
+printf '%s\n' "Installing oniux version $ONIUX_VERSION..."
 
 
 if command -v oniux >/dev/null 2>&1; then
@@ -165,29 +205,42 @@ printf '%s\n' "Verifying privacy tools..."
 
 # Proton VPN
 if sudo flatpak info "com.protonvpn.www" >/dev/null 2>&1; then
+
     printf '%s\n' '[OK] Proton VPN verified.'
+
 else
+
     printf '%s\n' '[ERROR] Proton VPN verification failed.'
     exit 1
+
 fi
 
 
 # Tor Browser Launcher
 if sudo flatpak info "org.torproject.torbrowser-launcher" >/dev/null 2>&1; then
+
     printf '%s\n' '[OK] Tor Browser Launcher verified.'
+
 else
+
     printf '%s\n' '[ERROR] Tor Browser Launcher verification failed.'
     exit 1
+
 fi
 
 
 # oniux
 if command -v oniux >/dev/null 2>&1; then
+
     printf '%s\n' '[OK] oniux verified.'
+    printf '%s\n' 'oniux version:'
     oniux --version
+
 else
+
     printf '%s\n' '[ERROR] oniux verification failed.'
     exit 1
+
 fi
 
 
